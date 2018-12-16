@@ -1,3 +1,11 @@
 module.exports = {
-    "extends": "standard"
+  "extends": "standard",
+  "plugins": [
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
 };
