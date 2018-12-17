@@ -1,7 +1,8 @@
 import React from 'react'
-import * as d3 from 'd3'
+var LineChart = require('react-chartjs').Line
+var BarChart = require('react-chartjs').Bar
 
-const chart = [
+const chartData = [
   {
     'date': '2018-10-16',
     'max_temperature': '32.4',
@@ -919,17 +920,126 @@ const chart = [
   }
 ]
 
-class LineChart extends React.Component {
-  getAllParagraphs () {
+function LineChartWithHeader (props) {
+  if (!props.show) {
+    return null
+  }
+
+  return (
+    <div>
+      <h3>{props.header}</h3>
+      <LineChart data={props.data} width="1080" height="500" />
+    </div>
+  )
+}
+
+function BarChartWithHeader (props) {
+  if (!props.show) {
+    return null
+  }
+
+  return (
+    <div>
+      <h3>{props.header}</h3>
+      <BarChart data={props.data} width="1080" height="500" />
+    </div>
+  )
+}
+
+class ChartBoard extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      temperature: {
+        labels: this._getDates(),
+        datasets: [
+          {
+            label: 'Maximum Temperature',
+            fillColor: 'rgba(220,220,220,0.2)',
+            strokeColor: 'rgba(220,220,220,1)',
+            pointColor: 'rgba(220,220,220,1)',
+            pointStrokeColor: '#fff',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(220,220,220,1)',
+            data: this._getDataWithKey('max_temperature')
+          },
+          {
+            label: 'Minimum Temperature',
+            fillColor: 'rgba(151,187,205,0.2)',
+            strokeColor: 'rgba(151,187,205,1)',
+            pointColor: 'rgba(151,187,205,1)',
+            pointStrokeColor: '#fff',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(151,187,205,1)',
+            data: this._getDataWithKey('min_temperature')
+          }
+        ]
+      },
+      humidity: {
+        labels: this._getDates(),
+        datasets: [
+          {
+            label: 'Relative Humidity in the morning',
+            fillColor: 'rgba(220,220,220,0.2)',
+            strokeColor: 'rgba(220,220,220,1)',
+            pointColor: 'rgba(220,220,220,1)',
+            pointStrokeColor: '#fff',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(220,220,220,1)',
+            data: this._getDataWithKey('relative_humidity_in_morning')
+          },
+          {
+            label: 'Relative Humidity in the afternoon',
+            fillColor: 'rgba(151,187,205,0.2)',
+            strokeColor: 'rgba(151,187,205,1)',
+            pointColor: 'rgba(151,187,205,1)',
+            pointStrokeColor: '#fff',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(151,187,205,1)',
+            data: this._getDataWithKey('relative_humidity_in_afternoon')
+          }
+        ]
+      },
+
+      evaporation: {
+        labels: this._getDates(),
+        datasets: [
+          {
+            label: 'Evaporation',
+            fillColor: 'rgba(220,220,220,0.2)',
+            strokeColor: 'rgba(220,220,220,1)',
+            pointColor: 'rgba(220,220,220,1)',
+            pointStrokeColor: '#fff',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(220,220,220,1)',
+            data: this._getDataWithKey('evaporation')
+          }
+        ]
+      }
+    }
+  }
+
+  _getDates () {
+    return chartData.map((data, i) => { return data['date'] })
+  }
+
+  _getDataWithKey (key) {
+    return (
+      chartData.map((data, i) => {
+        return data[key]
+      })
+    )
   }
 
   render () {
     return (
       <div>
-        <h1>This is a header</h1>
+        <LineChartWithHeader show={this.props.showTemperature} header="Temperature" data={this.state.temperature} />
+        <BarChartWithHeader show={this.props.showRelativeHumidity} header="Relative Humidity" data={this.state.humidity} />
+        <BarChartWithHeader show={this.props.showEvaporation} header="Evaporation" data={this.state.evaporation} />
       </div>
     )
   }
 }
 
-export default LineChart
+export default ChartBoard
